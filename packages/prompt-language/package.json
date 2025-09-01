@@ -1,0 +1,33 @@
+{
+  "name": "@arcanea/prompt-language",
+  "version": "1.0.0",
+  "description": "Arcanean Prompt Language (APL) - Define AI characters with mystical syntax",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "apl",
+    "arcanean",
+    "prompt",
+    "language",
+    "ai",
+    "character",
+    "dsl"
+  ],
+  "author": "Frank X <frank@arcanea.ai>",
+  "license": "MIT",
+  "dependencies": {
+    "yaml": "^2.3.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/lodash": "^4.14.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  }
+}
