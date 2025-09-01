@@ -1,0 +1,29 @@
+{
+  "name": "@arcanea/openrouter",
+  "version": "1.0.0",
+  "description": "Enhanced OpenRouter client with Arcanean character consciousness",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "openrouter",
+    "ai",
+    "llm",
+    "character",
+    "consciousness"
+  ],
+  "author": "Frank X <frank@arcanea.ai>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  }
+}

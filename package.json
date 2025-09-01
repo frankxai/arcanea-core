@@ -1,0 +1,48 @@
+{
+  "name": "@arcanea/core",
+  "version": "1.0.0",
+  "description": "Open-source AI character creation toolkit - the foundation of the Arcanea ecosystem",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "next dev",
+    "build": "turbo build",
+    "test": "vitest",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "playground": "cd apps/playground && npm run dev"
+  },
+  "keywords": [
+    "ai",
+    "character",
+    "openrouter", 
+    "llm",
+    "creative-ai",
+    "mystical",
+    "arcanea"
+  ],
+  "author": "Frank X <frank@arcanea.ai>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frankxai/arcanea-core"
+  },
+  "bugs": {
+    "url": "https://github.com/frankxai/arcanea-core/issues"
+  },
+  "homepage": "https://arcanea.ai",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "eslint": "^8.57.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
