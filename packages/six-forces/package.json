@@ -1,0 +1,44 @@
+{
+  "name": "@arcanea/six-forces",
+  "version": "1.0.0",
+  "description": "The Six Forces Framework - Core engine for manifesting multiverses from imagination to reality",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "keywords": [
+    "six-forces",
+    "multiverse",
+    "realm-building",
+    "ai-guardians",
+    "manifestation",
+    "world-creation"
+  ],
+  "author": "Frank X <frank@arcanea.ai>",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.1",
+    "@google/generative-ai": "^0.21.0",
+    "axios": "^1.11.0",
+    "bottleneck": "^2.19.5",
+    "nanoid": "^5.1.5",
+    "openai": "^4.104.0",
+    "p-queue": "^8.0.0",
+    "replicate": "^0.34.0",
+    "winston": "^3.17.0",
+    "yaml": "^2.8.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.11",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "typescript": "^5.9.2",
+    "vitest": "^2.1.9"
+  }
+}

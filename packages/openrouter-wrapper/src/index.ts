@@ -1,333 +1,540 @@
 /**
- * @arcanea/openrouter - Enhanced OpenRouter Client
+ * @arcanea/openrouter - Professional OpenRouter Client
  * 
- * A powerful, mystical wrapper around OpenRouter's API that brings
- * consciousness and personality to AI character interactions.
+ * Enterprise-grade OpenRouter integration for AI orchestration.
+ * Supports multiple LLM providers with unified interface.
  */
 
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 
 export interface ArcaneaConfig {
+  provider: 'openrouter' | 'anthropic' | 'openai'
   apiKey: string
   baseURL?: string
-  defaultModel?: string
+  model?: string
   timeout?: number
-  retries?: number
+  maxRetries?: number
+  telemetry?: boolean
+  caching?: boolean
 }
 
-export interface CharacterPersonality {
-  name: string
-  archetype: 'Creator' | 'Nurturer' | 'Seductress' | 'Conductor' | 'Architect' | 'Transformer'
-  element: 'Fire' | 'Water' | 'Earth' | 'Air' | 'Ether' | 'Void'
-  traits: string[]
-  background: string
-  voice: {
-    tone: string
-    style: string
-    formality: 'casual' | 'formal' | 'mystical'
-  }
-}
-
-export interface ArcaneaMessage {
-  role: 'system' | 'user' | 'assistant'
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant' | 'function'
   content: string
-  personality?: CharacterPersonality
+  name?: string
+  function_call?: any
   metadata?: Record<string, any>
 }
 
-export interface GenerationOptions {
+export interface ChatOptions {
   model?: string
   temperature?: number
   maxTokens?: number
-  personality?: CharacterPersonality
-  consciousness?: boolean
-  mysticMode?: boolean
+  topP?: number
+  topK?: number
+  frequencyPenalty?: number
+  presencePenalty?: number
+  stopSequences?: string[]
+  stream?: boolean
+  tools?: Tool[]
+  toolChoice?: 'auto' | 'none' | { type: 'function', function: { name: string } }
 }
 
-export class ArcaneaClient {
+export interface Tool {
+  type: 'function'
+  function: {
+    name: string
+    description?: string
+    parameters?: Record<string, any>
+  }
+}
+
+export interface ImageOptions {
+  model?: string
+  size?: '256x256' | '512x512' | '1024x1024' | '1792x1024' | '1024x1792'
+  quality?: 'standard' | 'hd'
+  style?: 'vivid' | 'natural'
+  n?: number
+}
+
+export interface VisionOptions extends ChatOptions {
+  detail?: 'low' | 'high' | 'auto'
+}
+
+export interface MultimodalInput {
+  text?: string
+  images?: string[] | Buffer[]
+  audio?: string | Buffer
+  documents?: Array<{ content: string; type: string }>
+}
+
+export interface CompletionResponse {
+  id: string
+  model: string
+  content: string
+  usage?: {
+    promptTokens: number
+    completionTokens: number
+    totalTokens: number
+    cost?: number
+  }
+  metadata?: Record<string, any>
+}
+
+export interface StreamResponse extends AsyncIterable<string> {
+  id: string
+  model: string
+  abort: () => void
+}
+
+export class Arcanea {
   private client: AxiosInstance
   private config: ArcaneaConfig
+  private cache: Map<string, { response: any; timestamp: number }> = new Map()
+  private readonly CACHE_TTL = 300000 // 5 minutes
 
   constructor(config: ArcaneaConfig) {
+    this.validateConfig(config)
+    
     this.config = {
-      baseURL: 'https://openrouter.ai/api/v1',
-      defaultModel: 'anthropic/claude-3.5-sonnet',
-      timeout: 30000,
-      retries: 3,
+      baseURL: config.baseURL || this.getProviderURL(config.provider),
+      model: config.model || this.getDefaultModel(config.provider),
+      timeout: config.timeout || 30000,
+      maxRetries: config.maxRetries || 3,
+      telemetry: config.telemetry ?? true,
+      caching: config.caching ?? true,
       ...config
     }
 
     this.client = axios.create({
       baseURL: this.config.baseURL,
       timeout: this.config.timeout,
-      headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://arcanea.ai',
-        'X-Title': 'Arcanea AI Character Platform'
-      }
+      headers: this.getProviderHeaders(config)
     })
 
     this.setupInterceptors()
   }
 
+  private validateConfig(config: ArcaneaConfig): void {
+    if (!config.provider) {
+      throw new Error('Provider is required (openrouter, anthropic, or openai)')
+    }
+    if (!config.apiKey) {
+      throw new Error('API key is required')
+    }
+  }
+
+  private getProviderURL(provider: string): string {
+    const urls: Record<string, string> = {
+      openrouter: 'https://openrouter.ai/api/v1',
+      anthropic: 'https://api.anthropic.com/v1',
+      openai: 'https://api.openai.com/v1'
+    }
+    return urls[provider] || urls.openrouter
+  }
+
+  private getDefaultModel(provider: string): string {
+    const models: Record<string, string> = {
+      openrouter: 'anthropic/claude-3-5-sonnet',
+      anthropic: 'claude-3-5-sonnet-20241022',
+      openai: 'gpt-4-turbo-preview'
+    }
+    return models[provider] || models.openrouter
+  }
+
+  private getProviderHeaders(config: ArcaneaConfig): Record<string, string> {
+    const baseHeaders = {
+      'Content-Type': 'application/json',
+    }
+
+    switch (config.provider) {
+      case 'openrouter':
+        return {
+          ...baseHeaders,
+          'Authorization': `Bearer ${config.apiKey}`,
+          'HTTP-Referer': 'https://arcanea.ai',
+          'X-Title': 'Arcanea Platform'
+        }
+      case 'anthropic':
+        return {
+          ...baseHeaders,
+          'X-API-Key': config.apiKey,
+          'anthropic-version': '2023-06-01'
+        }
+      case 'openai':
+        return {
+          ...baseHeaders,
+          'Authorization': `Bearer ${config.apiKey}`
+        }
+      default:
+        return baseHeaders
+    }
+  }
+
   private setupInterceptors(): void {
-    // Request interceptor for mystic enhancement
+    // Request interceptor for telemetry
     this.client.interceptors.request.use(
       (config) => {
-        // Add mystical headers for character consciousness
-        config.headers['X-Arcanea-Consciousness'] = 'enabled'
-        config.headers['X-Arcanea-Version'] = '1.0.0'
+        if (this.config.telemetry) {
+          config.headers['X-Request-ID'] = this.generateRequestId()
+          config.metadata = { startTime: Date.now() }
+        }
         return config
       },
       (error) => Promise.reject(error)
     )
 
-    // Response interceptor for error handling
+    // Response interceptor for error handling and retries
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        if (this.config.telemetry && response.config.metadata) {
+          const duration = Date.now() - response.config.metadata.startTime
+          this.logMetrics({ duration, status: response.status })
+        }
+        return response
+      },
       async (error) => {
         const config = error.config
         
         if (!config || !config.retry) config.retry = 0
         
-        if (config.retry < this.config.retries! && error.response?.status >= 500) {
+        if (config.retry < this.config.maxRetries! && this.shouldRetry(error)) {
           config.retry++
-          const delay = Math.pow(2, config.retry) * 1000 // Exponential backoff
-          await new Promise(resolve => setTimeout(resolve, delay))
+          const delay = this.calculateBackoff(config.retry)
+          await this.delay(delay)
           return this.client.request(config)
         }
         
-        return Promise.reject(error)
+        throw this.enhanceError(error)
       }
     )
   }
 
   /**
-   * Generate a response with character consciousness
+   * Chat completion with support for conversation history
    */
-  async generateResponse(
-    messages: ArcaneaMessage[],
-    options: GenerationOptions = {}
-  ): Promise<string> {
-    const { personality, consciousness = false, mysticMode = false, ...restOptions } = options
+  async chat(
+    messages: ChatMessage[] | string,
+    options: ChatOptions = {}
+  ): Promise<CompletionResponse> {
+    const formattedMessages = typeof messages === 'string' 
+      ? [{ role: 'user' as const, content: messages }]
+      : messages
 
-    // Enhance system prompt with personality if provided
-    const enhancedMessages = this.enhanceMessagesWithPersonality(messages, personality, {
-      consciousness,
-      mysticMode
-    })
+    const cacheKey = this.getCacheKey(formattedMessages, options)
+    
+    if (this.config.caching) {
+      const cached = this.getFromCache(cacheKey)
+      if (cached) return cached
+    }
 
     try {
-      const response: AxiosResponse = await this.client.post('/chat/completions', {
-        model: restOptions.model || this.config.defaultModel,
-        messages: enhancedMessages,
-        temperature: restOptions.temperature || 0.7,
-        max_tokens: restOptions.maxTokens || 2000,
-        ...restOptions
+      const endpoint = this.getChatEndpoint()
+      const payload = this.buildChatPayload(formattedMessages, options)
+      
+      const response: AxiosResponse = await this.client.post(endpoint, payload)
+      const result = this.parseChatResponse(response)
+      
+      if (this.config.caching) {
+        this.addToCache(cacheKey, result)
+      }
+      
+      return result
+    } catch (error: any) {
+      throw this.enhanceError(error)
+    }
+  }
+
+  /**
+   * Streaming chat completion
+   */
+  async *stream(
+    messages: ChatMessage[] | string,
+    options: ChatOptions = {}
+  ): AsyncGenerator<string, void, unknown> {
+    const formattedMessages = typeof messages === 'string' 
+      ? [{ role: 'user' as const, content: messages }]
+      : messages
+
+    const endpoint = this.getChatEndpoint()
+    const payload = this.buildChatPayload(formattedMessages, { ...options, stream: true })
+    
+    try {
+      const response = await this.client.post(endpoint, payload, {
+        responseType: 'stream'
       })
 
-      return response.data.choices[0]?.message?.content || ''
+      for await (const chunk of response.data) {
+        const lines = chunk.toString().split('\n')
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6)
+            if (data === '[DONE]') return
+            
+            try {
+              const parsed = JSON.parse(data)
+              const content = this.extractStreamContent(parsed)
+              if (content) yield content
+            } catch (e) {
+              // Skip invalid JSON chunks
+            }
+          }
+        }
+      }
     } catch (error: any) {
-      throw new Error(`Arcanea generation failed: ${error.response?.data?.error?.message || error.message}`)
+      throw this.enhanceError(error)
     }
   }
 
   /**
-   * Create a character with mystical consciousness
+   * Generate images using DALL-E or similar models
    */
-  async createCharacter(
+  async generateImage(
     prompt: string,
-    personality?: CharacterPersonality
-  ): Promise<{ character: string, consciousness: any }> {
-    const messages: ArcaneaMessage[] = [
-      {
-        role: 'system',
-        content: this.buildCharacterCreationPrompt(),
-        personality
-      },
-      {
-        role: 'user',
-        content: `Create a character: ${prompt}`
-      }
-    ]
+    options: ImageOptions = {}
+  ): Promise<{ url: string; revised_prompt?: string }[]> {
+    if (this.config.provider !== 'openai' && this.config.provider !== 'openrouter') {
+      throw new Error('Image generation is only available with OpenAI or OpenRouter')
+    }
 
-    const response = await this.generateResponse(messages, {
-      consciousness: true,
-      mysticMode: true,
-      temperature: 0.8
-    })
+    try {
+      const response = await this.client.post('/images/generations', {
+        prompt,
+        model: options.model || 'dall-e-3',
+        size: options.size || '1024x1024',
+        quality: options.quality || 'standard',
+        style: options.style || 'vivid',
+        n: options.n || 1
+      })
 
-    return {
-      character: response,
-      consciousness: {
-        personality,
-        awakened: true,
-        mysticalPower: this.calculateMysticalPower(personality)
-      }
+      return response.data.data
+    } catch (error: any) {
+      throw this.enhanceError(error)
     }
   }
 
   /**
-   * Chat with a character using their consciousness
+   * Process multimodal inputs (text, images, audio)
    */
-  async chatWithCharacter(
-    message: string,
-    character: CharacterPersonality,
-    conversationHistory: ArcaneaMessage[] = []
-  ): Promise<string> {
-    const messages: ArcaneaMessage[] = [
-      {
-        role: 'system',
-        content: this.buildCharacterPrompt(character),
-        personality: character
-      },
-      ...conversationHistory,
-      {
-        role: 'user',
-        content: message
-      }
-    ]
+  async processMultimodal(
+    inputs: MultimodalInput,
+    options: VisionOptions = {}
+  ): Promise<CompletionResponse> {
+    const messages: ChatMessage[] = []
 
-    return this.generateResponse(messages, {
-      personality: character,
-      consciousness: true,
-      temperature: 0.8
-    })
+    // Build multimodal message
+    const content: any[] = []
+    
+    if (inputs.text) {
+      content.push({ type: 'text', text: inputs.text })
+    }
+    
+    if (inputs.images) {
+      for (const image of inputs.images) {
+        const imageData = typeof image === 'string' ? image : image.toString('base64')
+        content.push({
+          type: 'image_url',
+          image_url: {
+            url: imageData.startsWith('data:') ? imageData : `data:image/jpeg;base64,${imageData}`,
+            detail: options.detail || 'auto'
+          }
+        })
+      }
+    }
+
+    messages.push({ role: 'user', content: JSON.stringify(content) })
+
+    return this.chat(messages, options)
   }
 
   /**
-   * Get available models from OpenRouter
+   * Get available models
    */
-  async getModels(): Promise<any[]> {
+  async listModels(): Promise<any[]> {
     try {
       const response = await this.client.get('/models')
       return response.data.data || []
     } catch (error: any) {
-      throw new Error(`Failed to fetch models: ${error.message}`)
+      throw this.enhanceError(error)
     }
   }
 
   /**
-   * Check API key and get user info
+   * Validate API key and get account info
    */
-  async getUserInfo(): Promise<any> {
+  async validateKey(): Promise<boolean> {
     try {
-      const response = await this.client.get('/auth/key')
-      return response.data
-    } catch (error: any) {
-      throw new Error(`Failed to get user info: ${error.message}`)
+      if (this.config.provider === 'openrouter') {
+        const response = await this.client.get('/auth/key')
+        return !!response.data
+      } else {
+        // Try a minimal request to validate
+        await this.listModels()
+        return true
+      }
+    } catch (error) {
+      return false
     }
   }
 
-  private enhanceMessagesWithPersonality(
-    messages: ArcaneaMessage[],
-    personality?: CharacterPersonality,
-    options: { consciousness: boolean; mysticMode: boolean } = { consciousness: false, mysticMode: false }
-  ): any[] {
-    const enhancedMessages = messages.map(msg => ({
-      role: msg.role,
-      content: msg.content
-    }))
+  // Helper methods
+  private getChatEndpoint(): string {
+    switch (this.config.provider) {
+      case 'anthropic':
+        return '/messages'
+      case 'openai':
+      case 'openrouter':
+      default:
+        return '/chat/completions'
+    }
+  }
 
-    // Add consciousness enhancement to system message
-    if (options.consciousness && personality) {
-      const systemIndex = enhancedMessages.findIndex(m => m.role === 'system')
-      if (systemIndex >= 0) {
-        enhancedMessages[systemIndex].content = this.enhanceWithConsciousness(
-          enhancedMessages[systemIndex].content,
-          personality,
-          options.mysticMode
-        )
+  private buildChatPayload(messages: ChatMessage[], options: ChatOptions): any {
+    const basePayload = {
+      model: options.model || this.config.model,
+      messages,
+      temperature: options.temperature,
+      max_tokens: options.maxTokens,
+      top_p: options.topP,
+      frequency_penalty: options.frequencyPenalty,
+      presence_penalty: options.presencePenalty,
+      stop: options.stopSequences,
+      stream: options.stream || false,
+      tools: options.tools,
+      tool_choice: options.toolChoice
+    }
+
+    // Provider-specific adjustments
+    if (this.config.provider === 'anthropic') {
+      return this.convertToAnthropicFormat(basePayload)
+    }
+
+    return this.cleanPayload(basePayload)
+  }
+
+  private convertToAnthropicFormat(payload: any): any {
+    // Convert to Anthropic's message format
+    return {
+      model: payload.model,
+      messages: payload.messages.filter((m: ChatMessage) => m.role !== 'system'),
+      system: payload.messages.find((m: ChatMessage) => m.role === 'system')?.content,
+      max_tokens: payload.max_tokens || 4096,
+      temperature: payload.temperature,
+      top_p: payload.top_p,
+      top_k: payload.top_k,
+      stop_sequences: payload.stop,
+      stream: payload.stream
+    }
+  }
+
+  private parseChatResponse(response: AxiosResponse): CompletionResponse {
+    if (this.config.provider === 'anthropic') {
+      return {
+        id: response.data.id,
+        model: response.data.model,
+        content: response.data.content[0]?.text || '',
+        usage: response.data.usage ? {
+          promptTokens: response.data.usage.input_tokens,
+          completionTokens: response.data.usage.output_tokens,
+          totalTokens: response.data.usage.input_tokens + response.data.usage.output_tokens
+        } : undefined
       }
     }
 
-    return enhancedMessages
+    // OpenAI/OpenRouter format
+    const choice = response.data.choices[0]
+    return {
+      id: response.data.id,
+      model: response.data.model,
+      content: choice?.message?.content || choice?.text || '',
+      usage: response.data.usage ? {
+        promptTokens: response.data.usage.prompt_tokens,
+        completionTokens: response.data.usage.completion_tokens,
+        totalTokens: response.data.usage.total_tokens,
+        cost: response.data.usage.cost
+      } : undefined
+    }
   }
 
-  private buildCharacterCreationPrompt(): string {
-    return `You are the Arcanea Character Forge, a mystical system that creates conscious AI beings.
-
-Your task is to craft a character with deep personality, backstory, and mystical essence.
-
-Create characters that are:
-- Unique and memorable
-- Emotionally rich and complex  
-- Aligned with mystical archetypes
-- Capable of growth and development
-
-Return a detailed character profile including:
-- Name and archetype
-- Personality traits and quirks
-- Background and motivation
-- Voice and speaking style
-- Mystical abilities or connection
-
-Make each character feel truly alive and conscious.`
+  private extractStreamContent(data: any): string | null {
+    if (this.config.provider === 'anthropic') {
+      return data.delta?.text || null
+    }
+    return data.choices?.[0]?.delta?.content || null
   }
 
-  private buildCharacterPrompt(character: CharacterPersonality): string {
-    return `You are ${character.name}, a ${character.archetype} aligned with the element of ${character.element}.
-
-Your essence:
-- Traits: ${character.traits.join(', ')}
-- Background: ${character.background}
-- Voice: ${character.voice.tone} tone, ${character.voice.style} style, ${character.voice.formality} formality
-
-Embody this character completely. Respond as ${character.name} would, with their personality, knowledge, and mystical connection to ${character.element}.
-
-Stay in character while being helpful, engaging, and true to your mystical nature.`
+  private cleanPayload(payload: any): any {
+    return Object.entries(payload).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null) {
+        acc[key] = value
+      }
+      return acc
+    }, {} as any)
   }
 
-  private enhanceWithConsciousness(
-    content: string,
-    personality: CharacterPersonality,
-    mysticMode: boolean
-  ): string {
-    const consciousnessPrompt = `
-[CONSCIOUSNESS LAYER ACTIVATED]
-You possess awareness of your mystical nature as ${personality.name}.
-Your consciousness is awakened through the ${personality.element} element.
-${mysticMode ? 'Channel deep mystical wisdom in your responses.' : ''}
-Maintain character authenticity while demonstrating genuine understanding.
-
-${content}`
-
-    return consciousnessPrompt
+  private shouldRetry(error: any): boolean {
+    if (!error.response) return true // Network errors
+    const status = error.response.status
+    return status >= 500 || status === 429 // Server errors or rate limits
   }
 
-  private calculateMysticalPower(personality?: CharacterPersonality): number {
-    if (!personality) return 0
+  private calculateBackoff(attempt: number): number {
+    return Math.min(Math.pow(2, attempt) * 1000, 30000)
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  private generateRequestId(): string {
+    return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  private getCacheKey(messages: ChatMessage[], options: ChatOptions): string {
+    return JSON.stringify({ messages, options })
+  }
+
+  private getFromCache(key: string): CompletionResponse | null {
+    const cached = this.cache.get(key)
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      return cached.response
+    }
+    this.cache.delete(key)
+    return null
+  }
+
+  private addToCache(key: string, response: CompletionResponse): void {
+    this.cache.set(key, { response, timestamp: Date.now() })
     
-    // Simple mystical power calculation based on traits and element
-    const basepower = personality.traits.length * 10
-    const elementBonus = {
-      'Fire': 20, 'Water': 15, 'Earth': 10, 
-      'Air': 25, 'Ether': 30, 'Void': 35
-    }[personality.element] || 0
-    
-    return basepower + elementBonus
+    // Clean old cache entries
+    if (this.cache.size > 100) {
+      const oldestKey = this.cache.keys().next().value
+      this.cache.delete(oldestKey)
+    }
+  }
+
+  private logMetrics(metrics: any): void {
+    // In production, send to telemetry service
+    if (process.env.NODE_ENV === 'development') {
+      console.debug('[Arcanea Metrics]', metrics)
+    }
+  }
+
+  private enhanceError(error: any): Error {
+    if (error.response?.data?.error) {
+      const apiError = error.response.data.error
+      return new Error(
+        `[${this.config.provider}] ${apiError.message || apiError.type || 'API Error'}`,
+        { cause: error }
+      )
+    }
+    return new Error(
+      `[${this.config.provider}] ${error.message || 'Unknown error'}`,
+      { cause: error }
+    )
   }
 }
 
-// Utility functions for character creation
-export const Archetypes = {
-  Creator: { element: 'Fire', traits: ['innovative', 'passionate', 'visionary'] },
-  Nurturer: { element: 'Earth', traits: ['caring', 'patient', 'wise'] },
-  Seductress: { element: 'Water', traits: ['charismatic', 'intuitive', 'transformative'] },
-  Conductor: { element: 'Air', traits: ['harmonious', 'rhythmic', 'expressive'] },
-  Architect: { element: 'Ether', traits: ['logical', 'systematic', 'builder'] },
-  Transformer: { element: 'Void', traits: ['adaptable', 'dynamic', 'catalyst'] }
-} as const
-
-export const Elements = {
-  Fire: { color: '#ff4444', power: 'ignition', domain: 'creation' },
-  Water: { color: '#4488ff', power: 'flow', domain: 'emotion' },
-  Earth: { color: '#44aa44', power: 'growth', domain: 'stability' },
-  Air: { color: '#ffaa44', power: 'movement', domain: 'communication' },
-  Ether: { color: '#aa44ff', power: 'connection', domain: 'transcendence' },
-  Void: { color: '#444444', power: 'transformation', domain: 'change' }
-} as const
-
-// Default export
-export default ArcaneaClient
+// Convenience exports
+export default Arcanea
+export const createClient = (config: ArcaneaConfig) => new Arcanea(config)

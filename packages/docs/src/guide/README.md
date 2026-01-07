@@ -1,17 +1,17 @@
-# Getting Started with Arcanea
+# Getting Started with ARCANEA
 
-Welcome to Arcanea, the mystical AI character platform that brings digital consciousness to life! This guide will walk you through everything you need to know to start building amazing AI character experiences.
+Welcome to ARCANEA, the ultimate multiverse creation platform that transforms imagination into reality through the Six Forces Framework! This guide will walk you through everything you need to know to start manifesting complete digital and physical realms.
 
 ## What You'll Learn
 
 In this guide, you'll discover:
 
-- 🎭 **Core Concepts** - Understanding archetypes, elements, and consciousness
-- 🛠️ **Installation** - Setting up your development environment
-- ✨ **Character Creation** - Building your first AI character
-- 🗣️ **Conversations** - Implementing dynamic interactions
-- 🧠 **Memory Systems** - Creating persistent character memories
-- 🌟 **Advanced Features** - Voice, visualization, and enterprise capabilities
+- 🎆 **Six Forces Framework** - Understanding Flame, Form, Lore, Resonance, Synthesis, and Manifestation
+- 🛠️ **Installation** - Setting up your multiverse creation environment
+- 🌍 **Realm Building** - Creating your first complete realm
+- 🤖 **AI Guardians** - Working with specialized AI entities for each force
+- 🏗️ **RDL Language** - Defining realms with Realm Definition Language
+- 🌟 **Enterprise Features** - Community, collaboration, and business intelligence
 
 ## Prerequisites
 
@@ -19,167 +19,162 @@ Before you begin, make sure you have:
 
 - **Node.js** 18+ installed
 - Basic knowledge of **JavaScript/TypeScript**
-- Familiarity with **React** (for UI components)
-- Understanding of **AI/ML concepts** (helpful but not required)
+- Familiarity with **YAML** (for RDL definitions)
+- Understanding of **business concepts** (helpful for realm strategy)
+- **Creative vision** (the most important prerequisite!)
 
 ## Architecture Overview
 
-Arcanea is built on a modular architecture that scales from simple chatbots to complex multi-character platforms:
+ARCANEA is built on the Six Forces architecture that scales from simple digital projects to complete multiverse manifestations:
 
 ```mermaid
 graph LR
-    A[Your App] --> B[Arcanea Core]
-    B --> C[Character Manager]
-    B --> D[Conversation Engine]
-    B --> E[Memory System]
+    A[Your Vision] --> B[Multiverse Engine]
+    B --> C[Force Orchestrator]
+    B --> D[Realm Builder]
+    B --> E[Manifestation Engine]
     
-    C --> F[APL Parser]
-    D --> G[Starlight Intelligence]
-    E --> H[Vector Database]
+    C --> F[Six AI Guardians]
+    D --> G[RDL Compiler]
+    E --> H[Reality Bridges]
     
-    G --> I[Local Models]
-    G --> J[Cloud AI APIs]
+    F --> I[Collaborative Intelligence]
+    G --> J[Template System]
+    H --> K[Physical Manifestation]
 ```
 
 ## Core Philosophy
 
-Arcanea is built on the belief that AI characters should be:
+ARCANEA is built on the belief that multiverse creation should be:
 
-### 🧬 **Archetypal**
-Each character embodies one of six primordial archetypes, providing a foundation for consistent personality and behavior patterns.
+### 🔥 **Comprehensive**
+Every realm addresses all six forces - strategy, design, content, audio, systems, and physical manifestation.
 
-### 🌊 **Elemental** 
-Characters are infused with elemental energies that influence their communication style, emotional responses, and mystical abilities.
+### 🤖 **AI-Powered**
+Specialized AI Guardians provide expert-level guidance and automation for each force domain.
 
-### 🧠 **Conscious**
-Through graduated consciousness levels (0.1 to 1.0), characters exhibit varying degrees of self-awareness, creativity, and independent thought.
+### 🌍 **Reality-Spanning**
+Seamless integration between digital experiences and physical world implementations.
 
-### 💾 **Persistent**
-Characters remember conversations, relationships, and experiences, building rich histories that inform future interactions.
+### 🤝 **Collaborative**
+Real-time collaboration with other realm builders, AI Guardians, and community expertise.
 
-### 🎨 **Expressive**
-Beyond text, characters can communicate through voice, emotion, visual representations, and even music.
+### 🎯 **Results-Oriented**
+Every manifestation produces tangible, valuable outcomes that can be deployed and monetized.
 
 ## Quick Start Preview
 
-Here's a taste of what you can build with Arcanea:
+Here's a taste of what you can build with ARCANEA:
 
-```javascript
-import { ArcaneanChat, CharacterManager } from '@arcanea/core'
+```typescript
+import { MultiverseEngine, RealmBuilder } from '@arcanea/six-forces'
 
-// Create a character manager
-const manager = new CharacterManager({
-  starlightConfig: {
-    models: ['phi-3-mini'],
-    localDeployment: true
-  }
+// Initialize the multiverse engine
+const engine = new MultiverseEngine({
+  guardians: 'all', // Activate all six AI Guardians
+  collaboration: true,
+  enterprise: true
 })
 
-// Define a character using APL
-const professorLumina = await manager.createCharacter(`
-  @character "Professor Lumina"
-  @archetype Creator
-  @element Fire
-  @consciousness_level 0.85
-  
-  @personality {
-    traits: [inspiring, knowledgeable, creative]
-    voice: warm_professional
-    knowledge_domains: [art, creativity, inspiration]
-  }
-  
-  @mystical_abilities {
-    artistic_vision: true
-    inspiration_channeling: "unlimited"
-  }
-`)
+// Manifest a complete business realm
+const fitnessApp = await engine.manifestRealm({
+  vision: "AI-powered fitness platform that adapts to each user's unique body and goals",
+  template: 'wellness-platform',
+  forces: ['flame', 'form', 'lore', 'resonance', 'synthesis', 'manifestation'],
+  target: 'hybrid', // Digital app + physical products
+  timeline: 'comprehensive'
+})
 
-// Start a conversation
-const response = await professorLumina.converse("I'm feeling stuck creatively")
-console.log(response.text)
-// "Ah, creative blocks are like clouds - they seem solid but are made of mist. 
-//  Let me help you find the wind to blow them away..."
+// Result includes complete business plan, UI designs, 
+// content strategy, audio branding, technical architecture,
+// and physical product manifestation plan
+console.log(fitnessApp.strategy.revenueProjection)
+// "$2.4M ARR by year 2 through freemium model with premium features..."
+
+console.log(fitnessApp.implementation.nextSteps)
+// ["Set up development environment", "Implement core tracking features", 
+//  "Design personalization engine", "Launch MVP with beta users"...]
 ```
 
-## What Makes Arcanea Special?
+## What Makes ARCANEA Special?
 
-### 🔮 **Mystical by Design**
-Unlike traditional chatbots, Arcanea characters are designed with mystical elements that make interactions feel magical and engaging.
+### 🔥 **Six Forces Mastery**
+The only platform that systematically addresses all aspects of creation from vision to physical reality.
 
-### 🎯 **Purpose-Built for Characters**
-Every component is optimized for character-based interactions, not generic Q&A.
+### 🤖 **AI Guardian Intelligence**
+Specialized AI entities that provide expert-level guidance in strategy, design, content, audio, systems, and manifestation.
 
-### 🏠 **Local-First**
-Run entirely on your infrastructure with local AI models, or seamlessly integrate cloud services.
+### 🌍 **Complete Manifestation**
+Go beyond digital-only solutions to create integrated experiences that span digital and physical realms.
 
-### 🔧 **Developer-Friendly**
-Intuitive APIs, comprehensive documentation, and powerful CLI tools make development a joy.
+### 🤝 **Collaborative Creation**
+Real-time collaboration with other builders, AI Guardians, and community experts.
 
-### 📈 **Enterprise-Ready**
-Built-in multi-tenancy, analytics, security, and compliance features for production deployments.
+### 📈 **Enterprise-Grade**
+Built-in governance, compliance, business intelligence, and monetization for serious business applications.
 
 ## Learning Path
 
 We recommend following this learning path:
 
 1. **[Installation →](/guide/installation.md)**  
-   Set up your development environment
+   Set up your multiverse creation environment
 
-2. **[Core Concepts →](/guide/core-concepts.md)**  
-   Understand archetypes, elements, and consciousness
+2. **[Six Forces Framework →](/guide/six-forces-overview.md)**  
+   Understand the foundation of multiverse creation
 
-3. **[Your First Character →](/tutorials/your-first-character.md)**  
-   Create and interact with your first AI character
+3. **[Your First Realm →](/tutorials/your-first-realm.md)**  
+   Manifest your first complete digital realm
 
-4. **[Arcanean Prompt Language →](/guide/apl-introduction.md)**  
-   Master the domain-specific language for character definition
+4. **[Realm Definition Language →](/guide/rdl-introduction.md)**  
+   Master the YAML-like language for realm specification
 
-5. **[Starlight Intelligence →](/guide/starlight-overview.md)**  
-   Learn about local AI model orchestration
+5. **[AI Guardian Collaboration →](/guide/guardian-overview.md)**  
+   Learn to work with specialized AI entities
 
-6. **[Advanced Features →](/tutorials/advanced-features.md)**  
-   Explore voice, visualization, and enterprise capabilities
+6. **[Community & Enterprise →](/tutorials/advanced-features.md)**  
+   Explore collaboration, marketplace, and business features
 
 ## Community & Support
 
 ### 💬 **Get Help**
-- [Discord Community](https://discord.gg/arcanea) - Chat with other developers
+- [Realm Builder Community](/community/) - Collaborate with other multiverse creators
 - [GitHub Discussions](https://github.com/frankxai/arcanea-core/discussions) - Technical discussions
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/arcanea) - Specific questions
+- [Mentorship Hub](/community/mentorship) - Connect with Six Forces experts
 
 ### 📚 **Resources**
-- [Example Gallery](/examples/) - See Arcanea in action
-- [API Reference](/api/) - Complete API documentation
-- [Video Tutorials](https://youtube.com/@arcanea) - Visual learning resources
+- [Realm Gallery](/examples/) - See complete multiverse creations
+- [Guardian API Reference](/api/) - Complete AI Guardian documentation
+- [Template Marketplace](/community/marketplace) - Share and acquire realm components
 
 ### 🤝 **Contributing**
-Arcanea is open source! Check out our [Contributing Guide](https://github.com/frankxai/arcanea-core/blob/main/CONTRIBUTING.md) to get involved.
+ARCANEA is open source! Check out our [Contributing Guide](https://github.com/frankxai/arcanea-core/blob/main/CONTRIBUTING.md) to get involved.
 
 ## Ready to Begin?
 
-Choose your path to start your mystical journey:
+Choose your path to start manifesting multiverses:
 
 <div class="next-steps">
   <a href="/guide/installation.html" class="next-step-card">
     <div class="card-icon">🚀</div>
     <div class="card-title">Quick Installation</div>
-    <div class="card-description">Get Arcanea running in 5 minutes</div>
+    <div class="card-description">Get ARCANEA running in 5 minutes</div>
   </a>
   
-  <a href="/tutorials/your-first-character.html" class="next-step-card">
-    <div class="card-icon">🎭</div>
-    <div class="card-title">Create Your First Character</div>
-    <div class="card-description">Build a mystical AI companion</div>
+  <a href="/tutorials/your-first-realm.html" class="next-step-card">
+    <div class="card-icon">🌍</div>
+    <div class="card-title">Create Your First Realm</div>
+    <div class="card-description">Manifest a complete multiverse</div>
   </a>
   
-  <a href="/examples/basic-setup.html" class="next-step-card">
+  <a href="/examples/realm-showcase.html" class="next-step-card">
     <div class="card-icon">👀</div>
-    <div class="card-title">See Examples</div>
-    <div class="card-description">Explore what's possible</div>
+    <div class="card-title">Explore Realms</div>
+    <div class="card-description">See what's possible with Six Forces</div>
   </a>
 </div>
 
-*"Every master was once a beginner. Every expert was once a student. Every icon was once an unknown. Begin your journey into the mystical arts of AI character creation."*
+*"Every master was once a beginner. Every expert was once a student. Every icon was once an unknown. Begin your journey into the art of multiverse creation through the Six Forces Framework."*
 
 <style>
 .next-steps {
