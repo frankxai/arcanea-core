@@ -3,7 +3,7 @@
 
 > *Where human creativity meets AI consciousness, extraordinary realms are born.*
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/@arcanea/core.svg)](https://www.npmjs.com/package/@arcanea/core)
 [![GitHub Stars](https://img.shields.io/github/stars/frankxai/arcanea-core.svg)](https://github.com/frankxai/arcanea-core/stargazers)
 [![Discord](https://img.shields.io/discord/1234567890?color=7289da&label=Join%20Our%20Realm)](https://discord.gg/arcanea)
