@@ -15,14 +15,14 @@
   "keywords": [
     "ai",
     "character",
-    "openrouter", 
+    "openrouter",
     "llm",
     "creative-ai",
     "mystical",
     "arcanea"
   ],
-  "author": "Frank X <frank@arcanea.ai>",
-  "license": "MIT",
+  "author": "Frank Riemer <frank@frankx.ai>",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/frankxai/arcanea-core"
