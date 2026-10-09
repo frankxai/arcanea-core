@@ -1,3 +1,5 @@
+> **Not maintained (9 Oct 2026).** The published `@arcanea/core` package and active code live in [frankxai/arcanea](https://github.com/frankxai/arcanea/tree/main/packages/core) (`packages/core`). The live product is [www.arcanea.ai](https://www.arcanea.ai), built from [frankxai/arcanea-ai-app](https://github.com/frankxai/arcanea-ai-app).
+
 # 🌌 Arcanea
 **The Sacred Platform for Realm Builders**
 
