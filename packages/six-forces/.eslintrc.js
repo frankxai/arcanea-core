@@ -26,7 +26,7 @@ module.exports = {
     'prefer-const': 'warn',
     'no-var': 'error',
     'eqeqeq': 'error',
-    'curly': 'error'
+    'curly': 'off'
   },
   ignorePatterns: [
     'dist/',

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import RDLParser from '../RDLParser'
-import { RealmDefinition } from '../../types'
 
 describe('RDLParser', () => {
   let parser: RDLParser
