@@ -64,12 +64,6 @@ Run tests before submitting:
 ```bash
 # Run all tests
 npm test
-
-# Run with coverage
-npm run test:coverage
-
-# Run in watch mode during development
-npm run test:watch
 ```
 
 Ensure:
@@ -136,9 +130,6 @@ npm run lint
 
 # Type check
 npm run type-check
-
-# Format code
-npm run format
 ```
 
 ## Release Process

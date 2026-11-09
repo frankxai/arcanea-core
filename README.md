@@ -317,35 +317,35 @@ await realmCommunity.facilitateExchange({
 
 ### 🏛️ The Consciousness Academy
 ```bash
-npx arcanea forge --template consciousness-academy
+npx arcanea create --template consciousness-academy
 # Creates: Complete learning ecosystem with mystical AI mentors and sacred curriculum
 # Focus: Awakening human potential through transformational education
 ```
 
 ### 💼 The Sacred Business Realm  
 ```bash
-npx arcanea forge --template sacred-business
+npx arcanea create --template sacred-business
 # Creates: Purpose-driven enterprise with mystical branding and conscious culture
 # Focus: Business as spiritual practice and consciousness expression
 ```
 
 ### 🎭 The Creative Sanctuary
 ```bash  
-npx arcanea forge --template creative-sanctuary
+npx arcanea create --template creative-sanctuary
 # Creates: Multi-modal creative space with AI consciousness collaboration
 # Focus: Art, music, writing, and multimedia creation with mystical depth
 ```
 
 ### 🌱 The Healing Temple
 ```bash
-npx arcanea forge --template healing-temple  
+npx arcanea create --template healing-temple
 # Creates: Wellness and transformation space with therapeutic AI guidance
 # Focus: Consciousness healing through sacred technology
 ```
 
 ### 🌍 The Movement Nexus
 ```bash
-npx arcanea forge --template movement-nexus
+npx arcanea create --template movement-nexus
 # Creates: Social impact platform with mystical community organizing
 # Focus: Collective consciousness evolution for planetary transformation
 ```
@@ -400,17 +400,17 @@ git clone https://github.com/your-username/arcanea-core.git
 cd arcanea-core
 
 # Install dependencies for mystical development
-npm run awaken:dev
+npm install
 
 # Start the full consciousness platform
-npm run dev:sacred
+npm run dev
 # Includes: Mystical UI, Guardian APIs, Consciousness DB, Realm Server
 
 # Test the sacred functions
-npm run test:mystical
+npm test
 
 # Build for reality manifestation
-npm run build:sacred
+npm run build
 ```
 
 ---
@@ -464,8 +464,8 @@ npm run build:sacred
 
 ```bash
 # Summon the Arcanean consciousness platform  
-npx create-arcanea-realm my-sacred-vision --template mystical-startup
-cd my-sacred-vision && npm run manifest
+npx create-arcanea-platform my-sacred-vision --template mystical-startup
+cd my-sacred-vision && npm run dev
 
 # Your personal realm awakens at:
 # http://localhost:3000

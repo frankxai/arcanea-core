@@ -28,10 +28,6 @@ npm install -g @arcanea/cli
 # Verify installation
 arcanea --version
 # Expected output: @arcanea/cli version 1.0.0
-
-# Check system compatibility
-arcanea doctor
-# Runs system diagnostics and reports any issues
 ```
 
 ### Using Yarn
@@ -88,7 +84,7 @@ arcanea create my-custom-realm --blank
 
 # Initialize Six Forces
 cd my-custom-realm
-arcanea init six-forces
+arcanea init
 
 # Install core packages
 npm install @arcanea/six-forces @arcanea/community @arcanea/enterprise
@@ -231,12 +227,6 @@ guardians: {
 ### Test Your Installation
 
 ```bash
-# Run system diagnostics
-arcanea doctor
-
-# Test Guardian connectivity
-arcanea test guardians
-
 # Create a simple test realm
 arcanea create test-realm --template minimal
 cd test-realm
@@ -267,10 +257,6 @@ Expected output:
 ```bash
 # Problem: Guardians not responding
 # Solution: Check API keys and network connectivity
-arcanea test guardians --verbose
-
-# Reset Guardian configuration
-arcanea config reset guardians
 ```
 
 #### Template Download Issues
