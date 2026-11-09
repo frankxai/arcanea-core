@@ -8,6 +8,7 @@
     "dev": "next dev",
     "build": "turbo build",
     "test": "vitest",
+    "test:coverage": "vitest run packages/six-forces",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "playground": "cd apps/playground && npm run dev"
