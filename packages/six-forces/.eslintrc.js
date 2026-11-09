@@ -11,8 +11,7 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'module',
-    project: './tsconfig.json'
+    sourceType: 'module'
   },
   rules: {
     // Disable rules that conflict with our AI Guardian architecture
